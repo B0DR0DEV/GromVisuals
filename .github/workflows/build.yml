@@ -1,0 +1,56 @@
+name: Build GromVisuals
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v5
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - name: Set up Gradle 9.2.0
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.2.0'
+
+      - name: Build Fabric mod
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f "build.gradle" ]; then
+            PROJECT_DIR="."
+          elif [ -f "GromVisuals/build.gradle" ]; then
+            PROJECT_DIR="GromVisuals"
+          else
+            echo "::error::Could not find build.gradle in repository root or ./GromVisuals."
+            echo "Repository files:"
+            ls -la
+            exit 1
+          fi
+
+          echo "Building project from: ${PROJECT_DIR}"
+          cd "${PROJECT_DIR}"
+          gradle --no-daemon clean build
+
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GromVisuals-Minecraft-1.21.11
+          path: |
+            **/build/libs/grom-visuals-*.jar
+          if-no-files-found: error
+          retention-days: 14
