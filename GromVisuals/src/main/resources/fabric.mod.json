@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "grom_visuals",
+  "version": "${version}",
+  "name": "GromVisuals",
+  "description": "Purple neon PvP HUD and visual customization for GromClient.",
+  "authors": ["GromClient"],
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.gromclient.visuals.GromVisualsClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.0",
+    "minecraft": "1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
